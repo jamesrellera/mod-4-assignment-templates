@@ -37,11 +37,14 @@ def shift_letter(letter, shift):
     '''
     # Replace `pass` with your code. 
     # Stay within the function. Only use the parameters as input. The function should return your answer.
-    if letter == " ":
+    if ord(letter)==32:
         return " "
-    ascii_value = ord(letter)
-    shifted_value = ((ascii_value - 65 + shift) % 26) + 65
-    return chr(shifted_value)
+    elif ord(letter)+shift >90:
+        while ord(letter)+shift>90:
+            shift=shift-26
+        return chr(ord(letter)+shift)
+    elif ord(letter)+shift <=90:
+        return chr(ord(letter)+shift)
 
 def caesar_cipher(message, shift):
     '''Caesar Cipher. 
@@ -63,14 +66,20 @@ def caesar_cipher(message, shift):
     '''
     # Replace `pass` with your code. 
     # Stay within the function. Only use the parameters as input. The function should return your answer.
-    message = message.upper()
-    result = ""
-    for char in message:
-        if char.isalpha():
-            result += chr(((ord(char) - 65 + shift) % 26) + 65)
-        else:
-            result += char
-    return result
+    shiftedstring=''
+    value=shift
+    
+    for i in message:
+        if ord(i)==32:
+            shiftedstring=shiftedstring+' '
+        elif ord(i)+shift>90:
+            while ord(i)+value>90:
+                value=value-26
+            shiftedstring=shiftedstring+chr(ord(i)+value)
+        elif ord(i)+shift<=90:
+            shiftedstring=shiftedstring+chr(ord(i)+shift)
+        
+    return shiftedstring
 
 def shift_by_letter(letter, letter_shift):
     '''Shift By Letter. 
@@ -100,15 +109,12 @@ def shift_by_letter(letter, letter_shift):
     '''
     # Replace `pass` with your code. 
     # Stay within the function. Only use the parameters as input. The function should return your answer.
-    if letter == " ":
+    if ord(letter)==32:
         return " "
-    if not ("A" <= letter <=  "Z") and letter != " ":
-        return "Invalid character for letter"
-    if not ("A" <= letter_shift <=  "Z"):
-        return "Invalid character for letter_shift"
-    shift = ord(letter_shift) - 65
-    shifted_value = ((ord(letter) - 65 + shift) % 26) + 65
-    return chr(shifted_value)
+    elif ord(letter)-65 + ord(letter_shift)-65 >25:
+        return chr(ord(letter)-65 + ord(letter_shift)-26)
+    elif ord(letter)-65 + ord(letter_shift)-65 <=25:
+        return chr(ord(letter)-65 + ord(letter_shift))
 
 def vigenere_cipher(message, key):
     '''Vigenere Cipher. 
@@ -141,16 +147,27 @@ def vigenere_cipher(message, key):
     '''
     # Replace `pass` with your code. 
     # Stay within the function. Only use the parameters as input. The function should return your answer.
-    message = message.upper()
-    key = key.upper()
-    encrypted_message = ""
-    key_index = 0
-    for letter in message:
-        if letter.isalpha():
-            shift = ord(key[key_index % len(key)]) - 65
-            shifted_letter = chr(((ord(letter) - 65 + shift) % 26) + 65)
-            encrypted_message += shifted_letter
-            key_index += 1
-        else:
-            encrypted_message += letter
-    return encrypted_message
+    keycode=[]
+    messagecode=[]
+    combinedcode=[]
+    answer=''
+    key_letters=(len(message)//len(key))*key + key[0:len(message)%len(key)]
+    
+    for y in range(0,len(message)):
+        messagecode.append(ord(message[y])-65)
+    
+    for x in range(0,len(key_letters)):
+        keycode.append(ord(key_letters[x])-65)
+        
+    for z in range (0,len(messagecode)):
+        if messagecode[z]==-33:
+            combinedcode.append(messagecode[z])
+        elif messagecode[z]+keycode[z]>25:
+            combinedcode.append(messagecode[z]+keycode[z]-26)
+        elif messagecode[z]+keycode[z]<=25:
+            combinedcode.append(messagecode[z]+keycode[z])
+        
+    for a in range(0,len(combinedcode)):
+        answer=answer+chr(combinedcode[a]+65)
+
+    return answer
